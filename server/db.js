@@ -1,10 +1,18 @@
 /**
  * Loader: na Vercel usa apenas db-vercel (Turso ou memória; nunca SQLite).
- * Local usa db-sqlite. Assim better-sqlite3 não é carregado na Vercel.
+ * Local usa db-sqlite. Fallback para db-vercel se SQLite falhar (ex.: serverless sem binário nativo).
  */
-const mod = process.env.VERCEL === "1"
-  ? await import("./db-vercel.js")
-  : await import("./db-sqlite.js");
+let mod;
+if (process.env.VERCEL === "1") {
+  mod = await import("./db-vercel.js");
+} else {
+  try {
+    mod = await import("./db-sqlite.js");
+  } catch (e) {
+    console.warn("db-sqlite indisponível, usando db-vercel (memória):", e?.message || e);
+    mod = await import("./db-vercel.js");
+  }
+}
 
 export const createUser = (...a) => mod.createUser(...a);
 export const findUserByEmail = (...a) => mod.findUserByEmail(...a);
