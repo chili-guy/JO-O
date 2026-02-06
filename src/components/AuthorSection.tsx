@@ -20,7 +20,7 @@ const AuthorSection = () => {
               </div>
               <div className="absolute -bottom-6 -right-6 bg-card border border-gold/30 rounded-lg p-4 glow-gold">
                 <p className="font-serif text-2xl text-gold">50+</p>
-                <p className="text-sm text-muted-foreground">Contos publicados</p>
+                <p className="text-sm text-muted-foreground">Aventuras publicadas</p>
               </div>
             </div>
 
@@ -32,7 +32,7 @@ const AuthorSection = () => {
               
               <p className="text-muted-foreground mb-6 leading-relaxed">
                 Há mais de uma década, dedico-me à arte de contar histórias que 
-                exploram os limites do desejo e da paixão. Cada conto é cuidadosamente 
+                exploram os limites do desejo e da paixão. Cada aventura é cuidadosamente 
                 escrito para envolver você em um universo de sensações.
               </p>
 
@@ -61,7 +61,7 @@ const AuthorSection = () => {
               </div>
 
               <Button className="bg-wine hover:bg-wine-light text-cream">
-                Conhecer mais contos
+                Conhecer mais aventuras
               </Button>
             </div>
           </div>
