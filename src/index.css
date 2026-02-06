@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lato:wght@300;400;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 45 20% 95%;
+
+    --card: 0 0% 7%;
+    --card-foreground: 45 20% 95%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 45 20% 95%;
+
+    --primary: 345 60% 35%;
+    --primary-foreground: 45 20% 95%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 45 20% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 45 10% 60%;
+
+    --accent: 42 80% 55%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 345 60% 35%;
+
+    --radius: 0.5rem;
+
+    --wine: 345 60% 35%;
+    --wine-dark: 345 70% 25%;
+    --wine-light: 345 50% 45%;
+    --gold: 42 80% 55%;
+    --gold-light: 42 90% 70%;
+    --cream: 45 20% 95%;
+
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 4%) 0%, hsl(345 70% 15%) 50%, hsl(0 0% 4%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 10%) 0%, hsl(0 0% 6%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(42 80% 55%) 0%, hsl(42 90% 70%) 100%);
+    --gradient-wine: linear-gradient(135deg, hsl(345 60% 35%) 0%, hsl(345 70% 25%) 100%);
+
+    --shadow-glow: 0 0 40px hsl(345 60% 35% / 0.3);
+    --shadow-gold: 0 0 30px hsl(42 80% 55% / 0.2);
+    --shadow-card: 0 10px 40px hsl(0 0% 0% / 0.5);
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 45 20% 95%;
+    --card: 0 0% 7%;
+    --card-foreground: 45 20% 95%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 45 20% 95%;
+    --primary: 345 60% 35%;
+    --primary-foreground: 45 20% 95%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 45 20% 95%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 45 10% 60%;
+    --accent: 42 80% 55%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 345 60% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+  }
+}
+
+@layer components {
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .glow-wine {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
