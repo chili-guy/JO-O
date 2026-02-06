@@ -1,52 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StoryCard from "./StoryCard";
-import { Button } from "@/components/ui/button";
 import { api, type Story } from "@/lib/api";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PRIMEIRA_LINHA = 3;  // 3 contos na vista inicial
-const POR_PAGINA = 6;      // 3 colunas x 2 linhas quando expandido
+const MAX_CONTOS = 6;  // 3 colunas x 2 linhas
 
 const StoriesSection = () => {
   const navigate = useNavigate();
-  const [expandido, setExpandido] = useState(false);
-  const [paginaAtual, setPaginaAtual] = useState(1);
   const [aventuras, setAventuras] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api.stories.list().then((list) => {
-      setAventuras(list.filter((s) => s.isPremium));
+      setAventuras(list.filter((s) => s.isPremium).slice(0, MAX_CONTOS));
     }).catch(() => setAventuras([])).finally(() => setLoading(false));
   }, []);
-  const totalPaginas = Math.ceil(aventuras.length / POR_PAGINA) || 1;
 
-  const indiceInicio = expandido
-    ? (paginaAtual - 1) * POR_PAGINA
-    : 0;
-  const quantidade = expandido ? POR_PAGINA : PRIMEIRA_LINHA;
-  const contosDestaPagina = aventuras.slice(indiceInicio, indiceInicio + quantidade);
-
-  // Expandido: sempre 6 slots no grid (3x2). Preenche com contos reais + placeholders "Em breve"
-  const contosVisiveis = expandido
-    ? Array.from({ length: POR_PAGINA }, (_, i) => contosDestaPagina[i] ?? null)
-    : contosDestaPagina;
-
-  const irParaPagina = (p: number) => {
-    const nova = Math.max(1, Math.min(p, totalPaginas));
-    setPaginaAtual(nova);
-  };
-
-  const abrirVerTudo = () => {
-    setPaginaAtual(1);
-    setExpandido(true);
-  };
-
-  const fecharVerTudo = () => {
-    setExpandido(false);
-    setPaginaAtual(1);
-  };
+  const contosVisiveis = aventuras;
 
   if (loading) {
     return (
