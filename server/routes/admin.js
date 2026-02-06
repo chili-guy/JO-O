@@ -14,9 +14,9 @@ router.use(authMiddleware);
 router.use(requireAdmin);
 
 // GET /api/admin/stories — listar todos (admin)
-router.get("/stories", (req, res) => {
+router.get("/stories", async (req, res) => {
   try {
-    const stories = listStories();
+    const stories = await listStories();
     res.json(stories);
   } catch (err) {
     console.error(err);
@@ -25,9 +25,9 @@ router.get("/stories", (req, res) => {
 });
 
 // GET /api/admin/stories/:id — um conto (admin)
-router.get("/stories/:id", (req, res) => {
+router.get("/stories/:id", async (req, res) => {
   try {
-    const story = getStoryById(req.params.id);
+    const story = await getStoryById(req.params.id);
     if (!story) return res.status(404).json({ error: "Conto não encontrado" });
     res.json(story);
   } catch (err) {
@@ -37,13 +37,13 @@ router.get("/stories/:id", (req, res) => {
 });
 
 // POST /api/admin/stories — criar conto (admin)
-router.post("/stories", (req, res) => {
+router.post("/stories", async (req, res) => {
   try {
     const body = req.body;
     if (!body.title) {
       return res.status(400).json({ error: "Título é obrigatório" });
     }
-    const story = createStory(body);
+    const story = await createStory(body);
     res.status(201).json(story);
   } catch (err) {
     console.error(err);
@@ -52,9 +52,9 @@ router.post("/stories", (req, res) => {
 });
 
 // PUT /api/admin/stories/:id — atualizar conto (admin)
-router.put("/stories/:id", (req, res) => {
+router.put("/stories/:id", async (req, res) => {
   try {
-    const story = updateStory(req.params.id, req.body);
+    const story = await updateStory(req.params.id, req.body);
     if (!story) return res.status(404).json({ error: "Conto não encontrado" });
     res.json(story);
   } catch (err) {
@@ -64,11 +64,11 @@ router.put("/stories/:id", (req, res) => {
 });
 
 // DELETE /api/admin/stories/:id — remover conto (admin)
-router.delete("/stories/:id", (req, res) => {
+router.delete("/stories/:id", async (req, res) => {
   try {
-    const existing = getStoryById(req.params.id);
+    const existing = await getStoryById(req.params.id);
     if (!existing) return res.status(404).json({ error: "Conto não encontrado" });
-    deleteStory(req.params.id);
+    await deleteStory(req.params.id);
     res.status(204).send();
   } catch (err) {
     console.error(err);

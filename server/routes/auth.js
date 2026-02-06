@@ -22,12 +22,12 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Senha deve ter no mínimo 6 caracteres" });
     }
     const type = accessType === "lifetime" ? "lifetime" : "per_story";
-    const existing = findUserByEmail(email);
+    const existing = await findUserByEmail(email);
     if (existing) {
       return res.status(409).json({ error: "Este email já está cadastrado" });
     }
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = createUser(email, passwordHash, type);
+    const user = await createUser(email, passwordHash, type);
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       JWT_SECRET,
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "Email e senha são obrigatórios" });
     }
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: "Email ou senha incorretos" });
     }
@@ -85,8 +85,8 @@ router.post("/login", async (req, res) => {
 });
 
 // GET /api/auth/me (requer token)
-router.get("/me", authMiddleware, (req, res) => {
-  const user = findUserById(req.userId);
+router.get("/me", authMiddleware, async (req, res) => {
+  const user = await findUserById(req.userId);
   if (!user) {
     return res.status(404).json({ error: "Usuário não encontrado" });
   }

@@ -11,6 +11,6 @@ if (!email) {
   process.exit(1);
 }
 
-const ok = setAdminByEmail(email);
+const ok = await setAdminByEmail(email);
 if (ok) console.log(`Administrador definido: ${email}`);
 else console.error(`Usuário não encontrado: ${email}`);

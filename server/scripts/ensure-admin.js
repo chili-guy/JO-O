@@ -10,13 +10,13 @@ const EMAIL = "admin@admin.com";
 const PASSWORD = "admin123";
 
 const hash = await bcrypt.hash(PASSWORD, 10);
-const existing = findUserByEmail(EMAIL);
+const existing = await findUserByEmail(EMAIL);
 
 if (existing) {
-  updatePasswordByEmail(EMAIL, hash);
-  setAdminByEmail(EMAIL);
+  await updatePasswordByEmail(EMAIL, hash);
+  await setAdminByEmail(EMAIL);
   console.log(`Senha do admin atualizada: ${EMAIL}`);
 } else {
-  createUser(EMAIL, hash, "per_story", true);
+  await createUser(EMAIL, hash, "per_story", true);
   console.log(`Admin criado: ${EMAIL} / ${PASSWORD}`);
 }

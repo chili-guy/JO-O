@@ -97,13 +97,15 @@ git push -u origin main
 1. Acesse [vercel.com](https://vercel.com) e faça login (pode usar conta GitHub).
 2. **Add New** → **Project** → importe o repositório do GitHub.
 3. Confirme: **Build Command:** `npm run build`, **Output Directory:** `dist`.
-4. Em **Environment Variables** adicione: `JWT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `VITE_APP_URL` e `PUBLIC_APP_URL` (URL do site, ex.: `https://seu-projeto.vercel.app`).
+4. Em **Environment Variables** adicione:
+   - `JWT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `VITE_APP_URL` e `PUBLIC_APP_URL` (URL do site, ex.: `https://seu-projeto.vercel.app`).
+   - **Banco na Vercel (obrigatório para a API):** `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN`. Crie um banco em [turso.tech](https://turso.tech), pegue a URL (libsql://…) e um token de acesso e configure nas variáveis. Sem isso a API retorna "temporariamente indisponível".
 5. Clique em **Deploy**.
 
 ### 3. Depois do deploy
 
 - No Stripe, configure o webhook: `https://seu-projeto.vercel.app/api/webhooks/stripe` (evento **checkout.session.completed**).
-- Na Vercel o SQLite usa `/tmp` (dados podem ser perdidos entre cold starts). Para produção use um banco externo (Vercel Postgres, Turso ou Neon).
+- A API usa **Turso (libsql)** na Vercel; localmente usa SQLite em `server/data`.
 
 ---
 

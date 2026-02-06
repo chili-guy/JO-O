@@ -8,14 +8,14 @@ import { getStoryById, updateStory, SEED_IMAGES, SEED_TEXTS } from "../db.js";
 
 let updated = 0;
 for (const id of Object.keys(SEED_IMAGES)) {
-  const story = getStoryById(id);
+  const story = await getStoryById(id);
   if (story) {
     const texts = SEED_TEXTS[id];
     const payload = {
       imageUrl: SEED_IMAGES[id],
       ...(texts ? { excerpt: texts.excerpt, fullExcerpt: texts.fullExcerpt } : {}),
     };
-    updateStory(id, payload);
+    await updateStory(id, payload);
     updated++;
     console.log(`OK: ${id} -> imagem e texto atualizados`);
   }

@@ -23,7 +23,7 @@ router.post("/create-checkout-session", authMiddleware, async (req, res) => {
   if (!storyId) {
     return res.status(400).json({ error: "storyId é obrigatório" });
   }
-  const story = getStoryById(storyId);
+  const story = await getStoryById(storyId);
   if (!story) {
     return res.status(404).json({ error: "Conto não encontrado" });
   }
@@ -89,7 +89,7 @@ export async function stripeWebhookHandler(req, res) {
     const userId = session.metadata?.userId;
     const storyId = session.metadata?.storyId;
     if (userId && storyId) {
-      addStoryAccess(userId, storyId);
+      await addStoryAccess(userId, storyId);
       console.log(`Acesso concedido: user=${userId} story=${storyId}`);
     }
   }

@@ -70,7 +70,8 @@
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "stripe": "^17.4.0"
+    "stripe": "^17.4.0",
+    "@libsql/client": "^0.14.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",

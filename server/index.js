@@ -24,10 +24,11 @@ const INIT_TIMEOUT_MS = 15000;
 const initPromise = (async () => {
   await Promise.race([
     (async () => {
-      seedStoriesIfEmpty();
-      if (!findUserByEmail(DEFAULT_ADMIN_EMAIL)) {
+      await seedStoriesIfEmpty();
+      const existing = await findUserByEmail(DEFAULT_ADMIN_EMAIL);
+      if (!existing) {
         const hash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
-        createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
+        await createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
         console.log(`Admin padrão criado: ${DEFAULT_ADMIN_EMAIL}`);
       }
     })(),

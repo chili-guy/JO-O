@@ -19,13 +19,17 @@ export function authMiddleware(req, res, next) {
   }
 }
 
-export function requireAdmin(req, res, next) {
-  const user = findUserById(req.userId);
-  const isAdmin = user && (user.is_admin || (user.email && user.email.toLowerCase() === "admin@admin.com"));
-  if (!isAdmin) {
-    return res.status(403).json({ error: "Acesso restrito a administradores" });
+export async function requireAdmin(req, res, next) {
+  try {
+    const user = await findUserById(req.userId);
+    const isAdmin = user && (user.is_admin || (user.email && user.email.toLowerCase() === "admin@admin.com"));
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Acesso restrito a administradores" });
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
-  next();
 }
 
 export function optionalAuth(req, res, next) {
