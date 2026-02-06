@@ -20,13 +20,24 @@ const DEFAULT_ADMIN_EMAIL = "admin@admin.com";
 const DEFAULT_ADMIN_PASSWORD = "admin123";
 
 // Inicialização completa antes de atender qualquer request (importante na Vercel serverless)
+const INIT_TIMEOUT_MS = 15000;
 const initPromise = (async () => {
-  seedStoriesIfEmpty();
-  if (!findUserByEmail(DEFAULT_ADMIN_EMAIL)) {
-    const hash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
-    createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
-    console.log(`Admin padrão criado: ${DEFAULT_ADMIN_EMAIL}`);
-  }
+  await Promise.race([
+    (async () => {
+      seedStoriesIfEmpty();
+      if (!findUserByEmail(DEFAULT_ADMIN_EMAIL)) {
+        const hash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
+        createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
+        console.log(`Admin padrão criado: ${DEFAULT_ADMIN_EMAIL}`);
+      }
+    })(),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Init timeout")), INIT_TIMEOUT_MS)
+    ),
+  ]).catch((err) => {
+    console.error("Init error:", err);
+    throw err;
+  });
 })();
 
 const app = express();

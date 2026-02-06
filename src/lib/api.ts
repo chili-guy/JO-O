@@ -48,10 +48,17 @@ async function parseJson(res: Response, hint = ""): Promise<unknown> {
   try {
     return text ? JSON.parse(text) : {};
   } catch {
-    const msg =
+    const status = res.status;
+    const isVercel = typeof window !== "undefined" && /vercel\.app|\.vercel\.app/i.test(window.location?.hostname ?? "");
+    let msg =
       res.status === 0 || res.type === "error"
         ? "Não foi possível conectar à API. Inicie-a em outro terminal: npm run server"
         : hint || "Resposta inválida da API. Verifique se o servidor está rodando: npm run server";
+    if (status >= 500 && isVercel) {
+      msg = `Erro na API (${status}). Na Vercel: confira Deployments → Logs e variáveis de ambiente.`;
+    } else if (status >= 500) {
+      msg = `Erro no servidor (${status}). ${msg}`;
+    }
     throw new Error(msg);
   }
 }
