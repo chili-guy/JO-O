@@ -11,12 +11,13 @@ try {
   app = module.default;
 } catch (err) {
   console.error("API failed to load:", err);
+  const errMsg = err?.message || String(err);
   app = express();
   app.use(express.json());
   app.use((_req, res) => {
     res.status(503).json({
       error: "API temporariamente indisponível. Verifique os logs do deploy na Vercel.",
-      detail: process.env.NODE_ENV === "development" ? err?.message : undefined,
+      detail: errMsg,
     });
   });
 }

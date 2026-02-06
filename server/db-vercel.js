@@ -1,10 +1,10 @@
 /**
- * Loader: na Vercel usa apenas db-vercel (Turso ou memória; nunca SQLite).
- * Local usa db-sqlite. Assim better-sqlite3 não é carregado na Vercel.
+ * Loader só para Vercel: usa Turso ou memória. Nunca importa db-sqlite (better-sqlite3).
  */
-const mod = process.env.VERCEL === "1"
-  ? await import("./db-vercel.js")
-  : await import("./db-sqlite.js");
+const useTurso = !!process.env.TURSO_DATABASE_URL;
+const mod = useTurso
+  ? await import("./db-turso.js")
+  : await import("./db-memory.js");
 
 export const createUser = (...a) => mod.createUser(...a);
 export const findUserByEmail = (...a) => mod.findUserByEmail(...a);
