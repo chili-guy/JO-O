@@ -13,7 +13,9 @@ import uploadRoutes from "./routes/upload.js";
 import stripeRoutes, { stripeWebhookHandler } from "./routes/stripe.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.join(__dirname, "uploads");
+const uploadsDir = process.env.VERCEL === "1"
+  ? path.join("/tmp", "story-sanctuary-uploads")
+  : path.join(__dirname, "uploads");
 if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 
 const DEFAULT_ADMIN_EMAIL = "admin@admin.com";
