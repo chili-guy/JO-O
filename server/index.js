@@ -19,7 +19,6 @@ if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 const DEFAULT_ADMIN_EMAIL = "admin@admin.com";
 const DEFAULT_ADMIN_PASSWORD = "admin123";
 
-// Inicialização completa antes de atender qualquer request (importante na Vercel serverless)
 const INIT_TIMEOUT_MS = 15000;
 const initPromise = (async () => {
   await Promise.race([
@@ -46,7 +45,6 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors({ origin: true, credentials: true }));
 
-// Garante que seed + admin existem antes de processar qualquer rota (fix admin na Vercel)
 app.use((_req, _res, next) => {
   initPromise.then(() => next()).catch(next);
 });
@@ -72,16 +70,26 @@ app.use("/api", (_req, res) => {
   res.status(404).json({ error: "Rota não encontrada" });
 });
 
+// Frontend integrado (só fora da Vercel; na Vercel o front é servido estático)
+if (process.env.VERCEL !== "1") {
+  const distPath = path.join(__dirname, "..", "dist");
+  if (existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  }
+}
+
 // Erros não tratados retornam JSON (evita HTML que quebra o parse no front)
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ error: err.message || "Erro interno no servidor" });
 });
 
-// Na Vercel não inicia listen; o app é exportado e usado em api/index.js
 if (process.env.VERCEL !== "1") {
   app.listen(PORT, () => {
-    console.log(`API Story Sanctuary rodando em http://localhost:${PORT}`);
+    console.log(`Story Sanctuary rodando em http://localhost:${PORT} (API + frontend)`);
   });
 }
 

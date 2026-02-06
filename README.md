@@ -71,43 +71,29 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## Deploy na Vercel + GitHub
+## Deploy integrado (backend + frontend em um servidor)
 
-### 1. Subir o código para o GitHub
+O app roda em **um único processo Node**: a API Express e o frontend (build do Vite) são servidos na mesma porta. Banco: **SQLite** em `server/data/` (sem serviços externos).
 
-```bash
-cd story-sanctuary-main
+### Rodar local
 
-# Se ainda não inicializou o repositório
-git init
+- **Só frontend (dev):** `npm run dev` — Vite na porta 8080 com proxy para a API em 3001.
+- **Só API:** `npm run server` — Express na 3001 (sem servir o frontend se não existir `dist/`).
+- **Tudo integrado (produção local):** `npm run build && npm run start` — gera `dist/` e sobe o servidor na 3001; acesse `http://localhost:3001` para site e API.
 
-# Adicionar tudo e fazer o primeiro commit
-git add .
-git commit -m "Configuração para Vercel e GitHub"
+### Deploy em produção (Railway, Render, Fly.io, etc.)
 
-# Criar um repositório novo no GitHub (github.com → New repository).
-# Depois vincule e envie (troque SEU_USUARIO e NOME_DO_REPO):
-git remote add origin https://github.com/SEU_USUARIO/NOME_DO_REPO.git
-git branch -M main
-git push -u origin main
-```
+1. Conecte o repositório ao serviço.
+2. **Build:** `npm run build`
+3. **Start:** `npm run start` (ou `node server/index.js`)
+4. Variáveis de ambiente: `JWT_SECRET`, `STRIPE_*`, `VITE_APP_URL` / `PUBLIC_APP_URL` (URL pública do app).
+5. O banco SQLite fica em disco no servidor; em plataformas efêmeras use volume persistente se quiser manter dados.
 
-### 2. Conectar e publicar na Vercel
-
-1. Acesse [vercel.com](https://vercel.com) e faça login (pode usar conta GitHub).
-2. **Add New** → **Project** → importe o repositório do GitHub.
-3. Confirme: **Build Command:** `npm run build`, **Output Directory:** `dist`.
-4. Em **Environment Variables** adicione:
-   - `JWT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `VITE_APP_URL` e `PUBLIC_APP_URL` (URL do site, ex.: `https://seu-projeto.vercel.app`).
-   - **Banco na Vercel (obrigatório para a API):** `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN`. Crie um banco em [turso.tech](https://turso.tech), pegue a URL (libsql://…) e um token de acesso e configure nas variáveis. Sem isso a API retorna "temporariamente indisponível".
-5. Clique em **Deploy**.
-
-### 3. Depois do deploy
-
-- No Stripe, configure o webhook: `https://seu-projeto.vercel.app/api/webhooks/stripe` (evento **checkout.session.completed**).
-- A API usa **Turso (libsql)** na Vercel; localmente usa SQLite em `server/data`.
+**Nota:** Na Vercel a API não sobe com SQLite (módulo nativo). Para “tudo em um” com SQLite, use Railway, Render ou similar.
 
 ---
+
+**Deploy na Vercel (sem configurar banco):** Faça o deploy normalmente. A API usa SQLite em `/tmp` — **sem persistência** (dados efêmeros). O admin (`admin@admin.com` / `admin123`) e os contos iniciais são recriados a cada cold start. Nada externo; só configurar `JWT_SECRET` nas variáveis de ambiente. Se o build falhar por causa do módulo nativo do SQLite, adicione **Turso** pelo Marketplace da Vercel para usar banco na nuvem.
 
 ## How can I deploy this project?
 

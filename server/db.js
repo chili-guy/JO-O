@@ -1,7 +1,6 @@
 /**
- * Loader do banco: na Vercel com TURSO_* configurado usa Turso (libsql);
- * caso contrário usa SQLite local (better-sqlite3).
- * Assim better-sqlite3 nunca é carregado na Vercel.
+ * Loader: na Vercel só usa Turso se TURSO_DATABASE_URL estiver definido;
+ * caso contrário usa SQLite (local em server/data, na Vercel em /tmp — efêmero).
  */
 const useTurso =
   process.env.VERCEL === "1" && process.env.TURSO_DATABASE_URL;

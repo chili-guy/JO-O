@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 import { mkdirSync, existsSync } from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// Na Vercel usa /tmp (persiste só durante a instância); em produção use DB externo (Vercel Postgres, Turso, etc.)
+// Na Vercel usa /tmp (efêmero: admin e contos recriados a cada cold start). Local: server/data.
 const dataDir = process.env.VERCEL === "1"
   ? path.join(tmpdir(), "story-sanctuary")
   : path.join(__dirname, "data");
@@ -15,7 +15,6 @@ const dbPath = path.join(dataDir, "story-sanctuary.db");
 
 const db = new Database(dbPath);
 
-// Schema: usuários com tipo de acesso (lifetime = vitalício, per_story = avulso por conto)
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -37,12 +36,10 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_user_stories_user ON user_stories(user_id);
 `);
 
-// Migração: adicionar is_admin se a tabela já existia sem a coluna
 try {
   db.exec("ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0");
 } catch (_) {}
 
-// Tabela de contos (fonte única para o site e para o painel admin)
 db.exec(`
   CREATE TABLE IF NOT EXISTS stories (
     id TEXT PRIMARY KEY,
@@ -115,7 +112,6 @@ function getUserPurchasedStoriesSync(userId) {
   return stmt.all(userId).map((r) => r.story_id);
 }
 
-// --- Stories (CRUD para admin e leitura pública) ---
 function rowToStory(row) {
   if (!row) return null;
   let tags = [];
@@ -242,7 +238,6 @@ function countStoriesSync() {
   return stmt.get().n;
 }
 
-// URLs de imagens temáticas (Unsplash/Pexels) para os contos pré-cadastrados (exportado para scripts)
 export const SEED_IMAGES = {
   "o-encontro-as-escuras": "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",
   "segredos-do-escritorio": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
@@ -252,7 +247,6 @@ export const SEED_IMAGES = {
   "confissoes-ao-luar": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
 };
 
-// Textos expandidos para atualização de contos existentes (exportado para scripts)
 export const SEED_TEXTS = {
   "o-encontro-as-escuras": {
     excerpt: "Uma noite de mistério em um hotel de luxo. Ela não sabia quem a esperava, mas o desejo era irresistível...",
@@ -370,7 +364,6 @@ Quando ele a beijou, o mar aplaudiu em ondas, e a lua foi a única testemunha de
   },
 };
 
-/** Insere contos iniciais se a tabela estiver vazia (para o site não ficar vazio) */
 function seedStoriesIfEmptySync() {
   if (countStoriesSync() > 0) return;
   const defaults = [
@@ -384,7 +377,6 @@ function seedStoriesIfEmptySync() {
   defaults.forEach((d) => createStorySync(d));
 }
 
-// API em Promises para uso com async/await (compatível com db-turso)
 export const createUser = (...a) => Promise.resolve(createUserSync(...a));
 export const findUserByEmail = (...a) => Promise.resolve(findUserByEmailSync(...a));
 export const findUserById = (...a) => Promise.resolve(findUserByIdSync(...a));
