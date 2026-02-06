@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { BookOpen, PlusCircle, LogOut, LayoutDashboard } from "lucide-react";
+import { BookOpen, PlusCircle, LogOut, LayoutDashboard, Home } from "lucide-react";
 
 export default function AdminLayout() {
   const { user, loading, logout } = useAuth();
@@ -57,7 +57,15 @@ export default function AdminLayout() {
             Novo conto
           </Link>
         </nav>
-        <div className="p-2 border-t border-border/50">
+        <div className="p-2 border-t border-border/50 space-y-1">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-muted-foreground hover:text-cream"
+            onClick={() => navigate("/")}
+          >
+            <Home className="w-4 h-4 mr-2" />
+            Voltar ao site
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-cream"
