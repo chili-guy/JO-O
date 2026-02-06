@@ -19,20 +19,25 @@ if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 const DEFAULT_ADMIN_EMAIL = "admin@admin.com";
 const DEFAULT_ADMIN_PASSWORD = "admin123";
 
-seedStoriesIfEmpty();
-
-// Cria usuário admin padrão se não existir
-(async () => {
-  if (findUserByEmail(DEFAULT_ADMIN_EMAIL)) return;
-  const hash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
-  createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
-  console.log(`Admin padrão criado: ${DEFAULT_ADMIN_EMAIL}`);
+// Inicialização completa antes de atender qualquer request (importante na Vercel serverless)
+const initPromise = (async () => {
+  seedStoriesIfEmpty();
+  if (!findUserByEmail(DEFAULT_ADMIN_EMAIL)) {
+    const hash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
+    createUser(DEFAULT_ADMIN_EMAIL, hash, "per_story", true);
+    console.log(`Admin padrão criado: ${DEFAULT_ADMIN_EMAIL}`);
+  }
 })();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors({ origin: true, credentials: true }));
+
+// Garante que seed + admin existem antes de processar qualquer rota (fix admin na Vercel)
+app.use((_req, _res, next) => {
+  initPromise.then(() => next()).catch(next);
+});
 
 // Webhook Stripe precisa do body raw (antes de express.json)
 app.post("/api/webhooks/stripe", express.raw({ type: "application/json" }), stripeWebhookHandler);
