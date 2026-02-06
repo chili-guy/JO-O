@@ -3,14 +3,14 @@ description: Sempre fazer commit e push após alterar arquivos do projeto
 alwaysApply: true
 ---
 
-# Git: push após alterações
+# Git: sempre fazer push
 
-Sempre que você modificar, criar ou remover arquivos neste projeto:
+**Obrigatório:** após qualquer alteração (modificar, criar ou remover arquivos) neste projeto, você **deve** executar:
 
-1. **Adicionar** as mudanças: `git add .` (ou os arquivos alterados).
-2. **Commitar** com mensagem clara: `git commit -m "Descrição objetiva da alteração"`.
-3. **Enviar** para o remoto: `git push` (ou `git push -u origin main` se for o primeiro push da branch).
+1. **Adicionar**: `git add .` (ou os arquivos alterados).
+2. **Commitar**: `git commit -m "Descrição objetiva da alteração"`.
+3. **Enviar**: `git push`.
 
-Execute os comandos na pasta raiz do projeto (`story-sanctuary-main`). Use o remote já configurado (SSH: `git@github.com:chili-guy/JO-O.git`).
-
-Não pule o push: o usuário espera que as alterações subam direto para o GitHub após cada atualização.
+- Execute os comandos na raiz do projeto (não apenas sugerir).
+- Use a pasta do repositório (ex.: `story-sanctuary-main`) e o remote já configurado.
+- **Nunca pule o push**: o usuário espera que as alterações subam para o GitHub após cada atualização.
