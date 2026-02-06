@@ -1,13 +1,18 @@
 /**
- * Loader: na Vercel só usa Turso se TURSO_DATABASE_URL estiver definido;
- * caso contrário usa SQLite (local em server/data, na Vercel em /tmp — efêmero).
+ * Loader:
+ * - Vercel + TURSO_DATABASE_URL → Turso (persistente)
+ * - Vercel sem Turso → db-memory (pure JS, efêmero; evita better-sqlite3 que falha no serverless)
+ * - Local → SQLite (server/data)
  */
-const useTurso =
-  process.env.VERCEL === "1" && process.env.TURSO_DATABASE_URL;
+const isVercel = process.env.VERCEL === "1";
+const useTurso = isVercel && process.env.TURSO_DATABASE_URL;
+const useMemory = isVercel && !useTurso;
 
 const mod = useTurso
   ? await import("./db-turso.js")
-  : await import("./db-sqlite.js");
+  : useMemory
+    ? await import("./db-memory.js")
+    : await import("./db-sqlite.js");
 
 export const createUser = (...a) => mod.createUser(...a);
 export const findUserByEmail = (...a) => mod.findUserByEmail(...a);
