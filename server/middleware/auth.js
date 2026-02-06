@@ -22,7 +22,10 @@ export function authMiddleware(req, res, next) {
 export async function requireAdmin(req, res, next) {
   try {
     const user = await findUserById(req.userId);
-    const isAdmin = user && (user.is_admin || (user.email && user.email.toLowerCase() === "admin@admin.com"));
+    // Admin: usuário no DB com is_admin OU email admin no token (evita 403 após cold start com db em memória)
+    const isAdmin =
+      (user && (user.is_admin || (user.email && user.email.toLowerCase() === "admin@admin.com"))) ||
+      (req.userEmail && req.userEmail.toLowerCase() === "admin@admin.com");
     if (!isAdmin) {
       return res.status(403).json({ error: "Acesso restrito a administradores" });
     }
