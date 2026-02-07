@@ -184,15 +184,9 @@ export async function countStories() {
   return stories.size;
 }
 
-// Vídeos de prévia curtos (YouTube) para a seção VSL — um por aventura para variar
-const SEED_PREVIEW_VIDEOS = [
-  "https://www.youtube.com/watch?v=aqz-KE-bpKQ", // Big Buck Bunny (curto)
-  "https://www.youtube.com/watch?v=eRsGyueVLvQ", // Sintel (curto)
-  "https://www.youtube.com/watch?v=4M2Zjs5t1HU", // Tears of Steel (curto)
-  "https://www.youtube.com/watch?v=8QyVZrV3d8o", // Caminandes (curto)
-  "https://www.youtube.com/watch?v=6WREtFRdL2M", // Cosmos Laundromat (curto)
-  "https://www.youtube.com/watch?v=2LqzF5WauIw", // Agent 327 (curto)
-];
+// Vídeo de prévia ~10s para o player local (MP4 direto, só ilustração). Uma URL por aventura para variar.
+const SEED_PREVIEW_VIDEOS_10S = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4";
+const SEED_PREVIEW_VIDEOS = Array(6).fill(SEED_PREVIEW_VIDEOS_10S);
 
 const DEFAULTS = [
   { id: "o-encontro-as-escuras", title: "O Encontro às Escuras", ...SEED_TEXTS["o-encontro-as-escuras"], category: "Romance", readTime: "12 min", price: 8.9, isPremium: false, tags: ["romance", "mistério", "hotel", "encontro"], publishedAt: "2024-01-15", views: 2847, imageUrl: SEED_IMAGES["o-encontro-as-escuras"], previewVideoUrl: SEED_PREVIEW_VIDEOS[0] },

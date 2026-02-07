@@ -19,17 +19,19 @@ import StoryCard from "@/components/StoryCard";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 
-/** URL padrão quando a aventura não tem previewVideoUrl (para sempre ter um vídeo na prévia) */
-const DEFAULT_PREVIEW_VIDEO = "https://www.youtube.com/watch?v=aqz-KE-bpKQ";
+/** Vídeo de prévia padrão: 10s, player local (MP4 direto) */
+const DEFAULT_PREVIEW_VIDEO = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4";
 
-/** Retorna { type, embedUrl?, directUrl? } para a URL do vídeo de prévia (VSL). mute=1 no embed para autoplay funcionar. */
+/** Retorna { type, embedUrl?, directUrl? }. Prioridade: MP4/direto = player local; YouTube/Vimeo = embed. */
 function parsePreviewVideoUrl(url: string | undefined): { type: "youtube" | "vimeo" | "direct" | "embed"; embedUrl?: string; directUrl?: string } | null {
   const u = (url || "").trim() || DEFAULT_PREVIEW_VIDEO;
+  // Vídeo direto (local /videos/xxx.mp4 ou URL .mp4/.webm/.ogg) → player local
+  if (/\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { type: "direct", directUrl: u };
+  if (/^\/\//.test(u)) return { type: "direct", directUrl: `https:${u}` };
   const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   if (ytMatch) return { type: "youtube", embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&mute=1` };
   const vimeoMatch = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if (vimeoMatch) return { type: "vimeo", embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1` };
-  if (/^https?:\/\//i.test(u) && /\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { type: "direct", directUrl: u };
   if (/^https?:\/\//i.test(u)) return { type: "embed", embedUrl: u };
   return null;
 }
@@ -264,7 +266,7 @@ const StoryPreview = () => {
         <DialogContent className="max-w-4xl w-[95vw] p-0 gap-0 border-wine/30 bg-background overflow-hidden [&>button]:right-2 [&>button]:top-2">
           <DialogTitle className="sr-only">Vídeo de prévia</DialogTitle>
           {previewVideo && (
-            <div className="aspect-video w-full bg-black">
+            <div className="aspect-video w-full bg-black relative">
               {previewVideo.embedUrl && (previewVideo.type === "youtube" || previewVideo.type === "vimeo" || previewVideo.type === "embed") && (
                 <iframe
                   key={previewVideoOpen ? "open" : "closed"}
@@ -276,14 +278,17 @@ const StoryPreview = () => {
                 />
               )}
               {previewVideo.type === "direct" && previewVideo.directUrl && (
-                <video
-                  key={previewVideoOpen ? "open" : "closed"}
-                  src={previewVideoOpen ? previewVideo.directUrl : undefined}
-                  controls
-                  autoPlay
-                  className="w-full h-full"
-                  playsInline
-                />
+                <>
+                  <video
+                    key={previewVideoOpen ? "open" : "closed"}
+                    src={previewVideoOpen ? previewVideo.directUrl : undefined}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
+                    playsInline
+                  />
+                  <span className="absolute bottom-2 left-2 text-xs text-white/70 bg-black/50 px-2 py-1 rounded">Prévia (10s)</span>
+                </>
               )}
             </div>
           )}
