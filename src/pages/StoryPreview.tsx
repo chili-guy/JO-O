@@ -139,9 +139,9 @@ const StoryPreview = () => {
               {story.title}
             </h1>
             
-            {/* Subtitle */}
+            {/* Subtitle / resumo curto */}
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed max-w-2xl mx-auto">
-              {story.excerpt}
+              {story.excerpt || story.fullExcerpt || "Uma aventura exclusiva esperando por você."}
             </p>
 
             {/* Meta Info */}
@@ -231,37 +231,32 @@ const StoryPreview = () => {
         </div>
       </section>
 
-      {/* Story Excerpt Section */}
-      <section className="py-12 md:py-16">
+      {/* Trecho da aventura (prévia do texto) */}
+      <section className="py-12 md:py-16" aria-label="Trecho da aventura">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             {/* Section Header */}
             <div className="flex items-center gap-3 mb-8">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/50 to-transparent" />
-              <span className="text-gold font-serif text-lg">Prévia do Texto</span>
+              <span className="text-gold font-serif text-lg">Trecho da aventura</span>
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/50 to-transparent" />
             </div>
 
-            {/* Excerpt Content */}
+            {/* Texto do trecho: fullExcerpt (parágrafos) ou excerpt como fallback */}
             <div className="bg-gradient-card border border-border/50 rounded-lg p-6 md:p-10 relative overflow-hidden">
-              {/* Decorative Elements */}
               <div className="absolute top-0 left-0 w-32 h-32 bg-wine/10 blur-3xl rounded-full" />
               <div className="absolute bottom-0 right-0 w-40 h-40 bg-gold/5 blur-3xl rounded-full" />
               
               <div className="relative">
-                {/* Quote Mark */}
                 <div className="text-6xl md:text-8xl text-wine/20 font-serif absolute -top-2 -left-2">"</div>
                 
-                {/* Story Text */}
                 <div className="font-serif text-base md:text-lg leading-relaxed text-cream/90 whitespace-pre-line pl-6 md:pl-8">
-                  {story.fullExcerpt}
+                  {story.fullExcerpt?.trim() || story.excerpt || "Leia o relato completo após desbloquear esta aventura."}
                 </div>
                 
-                {/* Fade Out Effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none" />
               </div>
 
-              {/* Continue Reading Prompt */}
               <div className="relative mt-8 pt-6 border-t border-border/30 text-center">
                 <p className="text-muted-foreground mb-4 text-sm">
                   Acesse o conteúdo completo
@@ -276,7 +271,7 @@ const StoryPreview = () => {
             {/* Tags */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
               <Tag className="w-4 h-4 text-muted-foreground" />
-              {story.tags.map((tag) => (
+              {(story.tags ?? []).map((tag) => (
                 <Badge 
                   key={tag} 
                   variant="outline" 
