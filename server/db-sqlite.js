@@ -53,6 +53,7 @@ db.exec(`
     image_url TEXT,
     media_url TEXT,
     media_type TEXT CHECK(media_type IN ('image', 'video', 'audio')),
+    preview_video_url TEXT,
     tags TEXT NOT NULL DEFAULT '[]',
     published_at TEXT NOT NULL,
     views INTEGER NOT NULL DEFAULT 0,
@@ -60,6 +61,7 @@ db.exec(`
     updated_at TEXT DEFAULT (datetime('now'))
   );
 `);
+try { db.exec("ALTER TABLE stories ADD COLUMN preview_video_url TEXT"); } catch (_) {}
 
 function createUserSync(email, passwordHash, accessType = "per_story", isAdmin = false) {
   const id = randomUUID();
@@ -130,6 +132,7 @@ function rowToStory(row) {
     imageUrl: row.image_url || "",
     mediaUrl: row.media_url || undefined,
     mediaType: row.media_type || undefined,
+    previewVideoUrl: row.preview_video_url || undefined,
     tags,
     publishedAt: row.published_at,
     views: row.views || 0,
@@ -157,8 +160,8 @@ function createStorySync(data) {
   const stmt = db.prepare(`
     INSERT INTO stories (
       id, title, excerpt, full_excerpt, category, read_time, price, is_premium,
-      image_url, media_url, media_type, tags, published_at, views
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      image_url, media_url, media_type, preview_video_url, tags, published_at, views
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   stmt.run(
     id,
@@ -172,6 +175,7 @@ function createStorySync(data) {
     data.imageUrl || data.image_url || null,
     data.mediaUrl || data.media_url || null,
     data.mediaType || data.media_type || null,
+    data.previewVideoUrl || data.preview_video_url || null,
     tags,
     data.publishedAt || data.published_at || new Date().toISOString().slice(0, 10),
     data.views != null ? data.views : 0
@@ -187,7 +191,7 @@ function updateStorySync(id, data) {
     UPDATE stories SET
       title = ?, excerpt = ?, full_excerpt = ?, category = ?, read_time = ?,
       price = ?, is_premium = ?, image_url = ?, media_url = ?, media_type = ?,
-      tags = ?, published_at = ?, views = ?, updated_at = datetime('now')
+      preview_video_url = ?, tags = ?, published_at = ?, views = ?, updated_at = datetime('now')
     WHERE id = ?
   `);
   stmt.run(
@@ -201,6 +205,7 @@ function updateStorySync(id, data) {
     data.imageUrl ?? data.image_url ?? existing.imageUrl,
     data.mediaUrl ?? data.media_url ?? existing.mediaUrl,
     data.mediaType ?? data.media_type ?? existing.mediaType,
+    data.previewVideoUrl ?? data.preview_video_url ?? existing.previewVideoUrl ?? null,
     tags,
     data.publishedAt ?? data.published_at ?? existing.publishedAt,
     data.views != null ? data.views : existing.views,

@@ -20,6 +20,8 @@ export type Story = {
   imageUrl: string;
   mediaUrl?: string;
   mediaType?: "image" | "video" | "audio";
+  /** URL do vídeo de prévia / VSL (YouTube, Vimeo ou link direto .mp4) */
+  previewVideoUrl?: string;
   tags: string[];
   publishedAt: string;
   views: number;

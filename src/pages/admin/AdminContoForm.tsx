@@ -19,6 +19,7 @@ const emptyStory: Partial<Story> = {
   imageUrl: "",
   mediaUrl: "",
   mediaType: "video",
+  previewVideoUrl: "",
   tags: [],
   publishedAt: new Date().toISOString().slice(0, 10),
   views: 0,
@@ -254,6 +255,19 @@ export default function AdminContoForm() {
                   />
                 </div>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Vídeo de prévia / VSL (URL)</Label>
+              <Input
+                value={form.previewVideoUrl ?? ""}
+                onChange={(e) => update("previewVideoUrl", e.target.value)}
+                placeholder="YouTube, Vimeo ou link direto (.mp4). Ex: https://youtube.com/watch?v=..."
+                className="bg-background"
+              />
+              <p className="text-xs text-muted-foreground">
+                Vídeo que aparece na seção &quot;Veja como tudo aconteceu&quot; antes de acessar o conteúdo completo. Deixe vazio para mostrar apenas o botão de compra.
+              </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">

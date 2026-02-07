@@ -1,22 +1,36 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowLeft, 
-  Clock, 
-  Eye, 
-  Heart, 
-  Share2, 
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  ArrowLeft,
+  Clock,
+  Eye,
+  Heart,
+  Share2,
   BookOpen,
   Calendar,
   Tag,
-  Play
+  Play,
 } from "lucide-react";
 import { api, type Story } from "@/lib/api";
 import StoryCard from "@/components/StoryCard";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
+
+/** Retorna { type, embedUrl?, directUrl? } para a URL do vídeo de prévia (VSL) */
+function parsePreviewVideoUrl(url: string | undefined): { type: "youtube" | "vimeo" | "direct" | "embed"; embedUrl?: string; directUrl?: string } | null {
+  if (!url || !url.trim()) return null;
+  const u = url.trim();
+  const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) return { type: "youtube", embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1` };
+  const vimeoMatch = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeoMatch) return { type: "vimeo", embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1` };
+  if (/^https?:\/\//i.test(u) && /\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { type: "direct", directUrl: u };
+  if (/^https?:\/\//i.test(u)) return { type: "embed", embedUrl: u };
+  return null;
+}
 
 const StoryPreview = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +42,9 @@ const StoryPreview = () => {
   const [notFound, setNotFound] = useState(false);
   const [buyLoading, setBuyLoading] = useState(false);
   const [buyError, setBuyError] = useState<string | null>(null);
+  const [previewVideoOpen, setPreviewVideoOpen] = useState(false);
+
+  const previewVideo = useMemo(() => parsePreviewVideoUrl(story?.previewVideoUrl), [story?.previewVideoUrl]);
 
   useEffect(() => {
     const storyId = id || "";
@@ -179,7 +196,7 @@ const StoryPreview = () => {
         </div>
       </section>
 
-      {/* Video Section - Blurred Preview */}
+      {/* Video Section - Prévia / VSL */}
       <section className="py-12 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -188,29 +205,24 @@ const StoryPreview = () => {
                 Veja como tudo <span className="text-gradient-gold">aconteceu</span>
               </h2>
               <p className="text-muted-foreground text-sm">
-                Acesse o conteúdo completo
+                {previewVideo ? "Assista à prévia e acesse o conteúdo completo" : "Acesse o conteúdo completo"}
               </p>
             </div>
 
-            {/* Video Container with Blur */}
             <div className="aspect-video bg-gradient-card border border-border/50 rounded-lg overflow-hidden relative group">
-              {/* Blurred Video/Image Placeholder */}
               <div className="absolute inset-0">
-                <img 
-                  src={story.imageUrl} 
+                <img
+                  src={story.imageUrl}
                   alt={story.title}
                   className="w-full h-full object-cover blur-xl scale-110"
                 />
               </div>
-              
-              {/* Dark Overlay */}
               <div className="absolute inset-0 bg-background/60" />
-              
-              {/* Play Button and Lock Overlay */}
+
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 <button
                   type="button"
-                  onClick={scrollToCompraAvulsa}
+                  onClick={() => (previewVideo ? setPreviewVideoOpen(true) : scrollToCompraAvulsa())}
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-wine/80 flex items-center justify-center mb-4 group-hover:bg-wine transition-colors cursor-pointer"
                 >
                   <Play className="w-6 h-6 md:w-8 md:h-8 text-cream ml-1" fill="currentColor" />
@@ -218,11 +230,14 @@ const StoryPreview = () => {
                 <div className="text-center px-4">
                   <p className="text-cream font-serif text-lg md:text-xl mb-2">Veja como tudo aconteceu</p>
                   <p className="text-muted-foreground text-sm mb-4">
-                    Acesse o conteúdo completo
+                    {previewVideo ? "Assista ao vídeo de prévia" : "Acesse o conteúdo completo"}
                   </p>
-                  <Button className="bg-wine hover:bg-wine-light text-cream gap-2" onClick={scrollToCompraAvulsa}>
+                  <Button
+                    className="bg-wine hover:bg-wine-light text-cream gap-2"
+                    onClick={() => (previewVideo ? setPreviewVideoOpen(true) : scrollToCompraAvulsa())}
+                  >
                     <Play className="w-4 h-4" />
-                    Acesse o conteúdo completo
+                    {previewVideo ? "Assistir vídeo de prévia" : "Acesse o conteúdo completo"}
                   </Button>
                 </div>
               </div>
@@ -230,6 +245,44 @@ const StoryPreview = () => {
           </div>
         </div>
       </section>
+
+      {/* Modal do vídeo de prévia (VSL) */}
+      <Dialog open={previewVideoOpen} onOpenChange={setPreviewVideoOpen}>
+        <DialogContent className="max-w-4xl w-[95vw] p-0 gap-0 border-wine/30 bg-background overflow-hidden [&>button]:right-2 [&>button]:top-2">
+          <DialogTitle className="sr-only">Vídeo de prévia</DialogTitle>
+          {previewVideo && (
+            <div className="aspect-video w-full bg-black">
+              {previewVideo.embedUrl && (previewVideo.type === "youtube" || previewVideo.type === "vimeo" || previewVideo.type === "embed") && (
+                <iframe
+                  src={previewVideo.embedUrl}
+                  title="Vídeo de prévia"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              )}
+              {previewVideo.type === "direct" && previewVideo.directUrl && (
+                <video
+                  src={previewVideo.directUrl}
+                  controls
+                  autoPlay
+                  className="w-full h-full"
+                  playsInline
+                />
+              )}
+            </div>
+          )}
+          <div className="p-4 border-t border-border/50 flex flex-wrap items-center justify-center gap-3">
+            <Button className="bg-wine hover:bg-wine-light text-cream gap-2" onClick={() => { setPreviewVideoOpen(false); scrollToCompraAvulsa(); }}>
+              <BookOpen className="w-4 h-4" />
+              Acesse o conteúdo completo
+            </Button>
+            <Button variant="outline" onClick={() => setPreviewVideoOpen(false)}>
+              Fechar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Trecho da aventura (prévia do texto) */}
       <section className="py-12 md:py-16" aria-label="Trecho da aventura">
