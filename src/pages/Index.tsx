@@ -8,15 +8,10 @@ import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(() =>
+    typeof window !== "undefined" ? localStorage.getItem("age-verified") === "true" : false
+  );
   const location = useLocation();
-
-  // Sincronizar com localStorage após montar (evita flash/hidratação e tela preta)
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("age-verified") === "true") {
-      setIsVerified(true);
-    }
-  }, []);
 
   // Handle scroll to anchor when coming from another page
   useEffect(() => {
