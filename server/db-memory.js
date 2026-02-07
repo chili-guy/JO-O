@@ -184,13 +184,23 @@ export async function countStories() {
   return stories.size;
 }
 
+// Vídeos de prévia curtos (YouTube) para a seção VSL — um por aventura para variar
+const SEED_PREVIEW_VIDEOS = [
+  "https://www.youtube.com/watch?v=aqz-KE-bpKQ", // Big Buck Bunny (curto)
+  "https://www.youtube.com/watch?v=eRsGyueVLvQ", // Sintel (curto)
+  "https://www.youtube.com/watch?v=4M2Zjs5t1HU", // Tears of Steel (curto)
+  "https://www.youtube.com/watch?v=8QyVZrV3d8o", // Caminandes (curto)
+  "https://www.youtube.com/watch?v=6WREtFRdL2M", // Cosmos Laundromat (curto)
+  "https://www.youtube.com/watch?v=2LqzF5WauIw", // Agent 327 (curto)
+];
+
 const DEFAULTS = [
-  { id: "o-encontro-as-escuras", title: "O Encontro às Escuras", ...SEED_TEXTS["o-encontro-as-escuras"], category: "Romance", readTime: "12 min", price: 8.9, isPremium: false, tags: ["romance", "mistério", "hotel", "encontro"], publishedAt: "2024-01-15", views: 2847, imageUrl: SEED_IMAGES["o-encontro-as-escuras"] },
-  { id: "segredos-do-escritorio", title: "Segredos do Escritório", ...SEED_TEXTS["segredos-do-escritorio"], category: "Suspense", readTime: "18 min", price: 8.9, isPremium: true, tags: ["suspense", "escritório", "tensão", "proibido"], publishedAt: "2024-01-20", views: 4521, imageUrl: SEED_IMAGES["segredos-do-escritorio"] },
-  { id: "a-viagem-de-verao", title: "A Viagem de Verão", ...SEED_TEXTS["a-viagem-de-verao"], category: "Aventura", readTime: "25 min", price: 8.9, isPremium: true, tags: ["aventura", "cabana", "tempestade", "verão"], publishedAt: "2024-02-01", views: 3892, imageUrl: SEED_IMAGES["a-viagem-de-verao"] },
-  { id: "cartas-de-amor-proibido", title: "Cartas de Amor Proibido", ...SEED_TEXTS["cartas-de-amor-proibido"], category: "Drama", readTime: "15 min", price: 8.9, isPremium: false, tags: ["drama", "cartas", "proibido", "paixão"], publishedAt: "2024-02-10", views: 2156, imageUrl: SEED_IMAGES["cartas-de-amor-proibido"] },
-  { id: "a-danca-da-meia-noite", title: "A Dança da Meia-Noite", ...SEED_TEXTS["a-danca-da-meia-noite"], category: "Fantasia", readTime: "20 min", price: 8.9, isPremium: true, tags: ["fantasia", "baile", "máscaras", "mistério"], publishedAt: "2024-02-20", views: 5234, imageUrl: SEED_IMAGES["a-danca-da-meia-noite"] },
-  { id: "confissoes-ao-luar", title: "Confissões ao Luar", ...SEED_TEXTS["confissoes-ao-luar"], category: "Romance", readTime: "10 min", price: 8.9, isPremium: false, tags: ["romance", "praia", "reencontro", "confissão"], publishedAt: "2024-03-01", views: 1987, imageUrl: SEED_IMAGES["confissoes-ao-luar"] },
+  { id: "o-encontro-as-escuras", title: "O Encontro às Escuras", ...SEED_TEXTS["o-encontro-as-escuras"], category: "Romance", readTime: "12 min", price: 8.9, isPremium: false, tags: ["romance", "mistério", "hotel", "encontro"], publishedAt: "2024-01-15", views: 2847, imageUrl: SEED_IMAGES["o-encontro-as-escuras"], previewVideoUrl: SEED_PREVIEW_VIDEOS[0] },
+  { id: "segredos-do-escritorio", title: "Segredos do Escritório", ...SEED_TEXTS["segredos-do-escritorio"], category: "Suspense", readTime: "18 min", price: 8.9, isPremium: true, tags: ["suspense", "escritório", "tensão", "proibido"], publishedAt: "2024-01-20", views: 4521, imageUrl: SEED_IMAGES["segredos-do-escritorio"], previewVideoUrl: SEED_PREVIEW_VIDEOS[1] },
+  { id: "a-viagem-de-verao", title: "A Viagem de Verão", ...SEED_TEXTS["a-viagem-de-verao"], category: "Aventura", readTime: "25 min", price: 8.9, isPremium: true, tags: ["aventura", "cabana", "tempestade", "verão"], publishedAt: "2024-02-01", views: 3892, imageUrl: SEED_IMAGES["a-viagem-de-verao"], previewVideoUrl: SEED_PREVIEW_VIDEOS[2] },
+  { id: "cartas-de-amor-proibido", title: "Cartas de Amor Proibido", ...SEED_TEXTS["cartas-de-amor-proibido"], category: "Drama", readTime: "15 min", price: 8.9, isPremium: false, tags: ["drama", "cartas", "proibido", "paixão"], publishedAt: "2024-02-10", views: 2156, imageUrl: SEED_IMAGES["cartas-de-amor-proibido"], previewVideoUrl: SEED_PREVIEW_VIDEOS[3] },
+  { id: "a-danca-da-meia-noite", title: "A Dança da Meia-Noite", ...SEED_TEXTS["a-danca-da-meia-noite"], category: "Fantasia", readTime: "20 min", price: 8.9, isPremium: true, tags: ["fantasia", "baile", "máscaras", "mistério"], publishedAt: "2024-02-20", views: 5234, imageUrl: SEED_IMAGES["a-danca-da-meia-noite"], previewVideoUrl: SEED_PREVIEW_VIDEOS[4] },
+  { id: "confissoes-ao-luar", title: "Confissões ao Luar", ...SEED_TEXTS["confissoes-ao-luar"], category: "Romance", readTime: "10 min", price: 8.9, isPremium: false, tags: ["romance", "praia", "reencontro", "confissão"], publishedAt: "2024-03-01", views: 1987, imageUrl: SEED_IMAGES["confissoes-ao-luar"], previewVideoUrl: SEED_PREVIEW_VIDEOS[5] },
 ];
 
 export async function seedStoriesIfEmpty() {

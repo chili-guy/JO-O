@@ -222,7 +222,12 @@ const StoryPreview = () => {
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 <button
                   type="button"
-                  onClick={() => (previewVideo ? setPreviewVideoOpen(true) : scrollToCompraAvulsa())}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (previewVideo) setPreviewVideoOpen(true);
+                    else scrollToCompraAvulsa();
+                  }}
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-wine/80 flex items-center justify-center mb-4 group-hover:bg-wine transition-colors cursor-pointer"
                 >
                   <Play className="w-6 h-6 md:w-8 md:h-8 text-cream ml-1" fill="currentColor" />
@@ -233,8 +238,14 @@ const StoryPreview = () => {
                     {previewVideo ? "Assista ao vídeo de prévia" : "Acesse o conteúdo completo"}
                   </p>
                   <Button
+                    type="button"
                     className="bg-wine hover:bg-wine-light text-cream gap-2"
-                    onClick={() => (previewVideo ? setPreviewVideoOpen(true) : scrollToCompraAvulsa())}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (previewVideo) setPreviewVideoOpen(true);
+                      else scrollToCompraAvulsa();
+                    }}
                   >
                     <Play className="w-4 h-4" />
                     {previewVideo ? "Assistir vídeo de prévia" : "Acesse o conteúdo completo"}
