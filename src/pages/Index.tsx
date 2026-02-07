@@ -7,32 +7,30 @@ import StoriesSection from "@/components/StoriesSection";
 import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 
+const STORAGE_KEY = "age-verified";
+
+function readVerified(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(STORAGE_KEY) === "true";
+}
+
 const Index = () => {
-  const [isVerified, setIsVerified] = useState(() =>
-    typeof window !== "undefined" ? localStorage.getItem("age-verified") === "true" : false
-  );
+  const [isVerified, setIsVerified] = useState(readVerified);
   const location = useLocation();
 
-  // Handle scroll to anchor when coming from another page
   useEffect(() => {
     if (location.hash) {
-      const sectionId = location.hash.replace("#", "");
-      // Small delay to ensure the page is rendered
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
+      const id = location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
     }
   }, [location.hash]);
 
+  const handleVerified = () => setIsVerified(true);
+
   return (
     <>
-      {!isVerified && (
-        <AgeVerificationModal onVerified={() => setIsVerified(true)} />
-      )}
-      
+      {!isVerified && <AgeVerificationModal onVerified={handleVerified} />}
       <div className="min-h-screen bg-background">
         <Header />
         <main>

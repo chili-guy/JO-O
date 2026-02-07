@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Dialog,
   DialogDescription,
@@ -11,38 +11,34 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const STORAGE_KEY = "age-verified";
+
 interface AgeVerificationModalProps {
   onVerified: () => void;
 }
 
-const AgeVerificationModal = ({ onVerified }: AgeVerificationModalProps) => {
+export default function AgeVerificationModal({ onVerified }: AgeVerificationModalProps) {
   const [open, setOpen] = useState(true);
 
-  useEffect(() => {
-    const verified = localStorage.getItem("age-verified");
-    if (verified === "true") {
-      setOpen(false);
-      onVerified();
-    }
-  }, [onVerified]);
-
-  const handleVerify = () => {
-    localStorage.setItem("age-verified", "true");
+  const handleVerify = useCallback(() => {
+    localStorage.setItem(STORAGE_KEY, "true");
     setOpen(false);
     onVerified();
-  };
+  }, [onVerified]);
 
-  const handleDeny = () => {
+  const handleDeny = useCallback(() => {
     window.location.href = "https://www.google.com";
-  };
+  }, []);
 
   return (
-    <Dialog open={open} modal={true}>
+    <Dialog open={open} modal>
       <DialogPortal>
         <DialogOverlay className="bg-black/50" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-gradient-card border-wine/30 p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg text-center"
+            "fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-gradient-card border-wine/30 p-6 shadow-lg duration-200",
+            "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+            "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg text-center"
           )}
         >
           <DialogHeader className="space-y-4">
@@ -57,23 +53,23 @@ const AgeVerificationModal = ({ onVerified }: AgeVerificationModalProps) => {
               Ao continuar, você confirma que tem idade legal para acessar este conteúdo.
             </DialogDescription>
           </DialogHeader>
-          
           <div className="flex flex-col gap-3 mt-6">
-            <Button 
+            <Button
+              type="button"
               onClick={handleVerify}
               className="w-full bg-wine hover:bg-wine-light text-cream font-semibold py-6 text-lg transition-all duration-300 glow-wine"
             >
               Tenho 18 anos ou mais
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={handleDeny}
               className="w-full border-muted-foreground/30 text-muted-foreground hover:bg-muted py-6"
             >
               Sou menor de idade
             </Button>
           </div>
-
           <p className="text-xs text-muted-foreground mt-4">
             Ao entrar, você concorda com nossos termos de uso e política de privacidade.
           </p>
@@ -81,6 +77,4 @@ const AgeVerificationModal = ({ onVerified }: AgeVerificationModalProps) => {
       </DialogPortal>
     </Dialog>
   );
-};
-
-export default AgeVerificationModal;
+}
