@@ -124,7 +124,7 @@ export default function AdminContoForm() {
       <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="font-serif text-cream">
-            {isEdit ? "Editar conto" : "Novo conto"}
+            {isEdit ? "Editar aventura" : "Nova aventura"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -214,7 +214,7 @@ export default function AdminContoForm() {
                 onChange={(e) => update("isPremium", e.target.checked)}
                 className="rounded accent-wine"
               />
-              <Label htmlFor="isPremium" className="cursor-pointer">Conto premium (avulso)</Label>
+              <Label htmlFor="isPremium" className="cursor-pointer">Aventura premium (avulsa)</Label>
             </div>
 
             <div className="space-y-2">
@@ -309,7 +309,7 @@ export default function AdminContoForm() {
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" className="bg-wine hover:bg-wine-light text-cream" disabled={saving}>
-                {saving ? "Salvando..." : isEdit ? "Salvar alterações" : "Criar conto"}
+                {saving ? "Salvando..." : isEdit ? "Salvar alterações" : "Criar aventura"}
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate("/admin/contos")}>
                 Cancelar

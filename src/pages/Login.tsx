@@ -51,7 +51,7 @@ const Login = () => {
               Entrar
             </CardTitle>
             <CardDescription>
-              Acesse sua conta para ler os contos disponíveis no seu plano.
+              Acesse sua conta para ler as aventuras disponíveis no seu plano.
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>

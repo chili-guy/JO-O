@@ -114,13 +114,13 @@ export const api = {
     async list(): Promise<Story[]> {
       const res = await fetch(`${API_BASE}/stories`);
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao listar contos");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao listar aventuras");
       return data as Story[];
     },
     async get(id: string): Promise<Story> {
       const res = await fetch(`${API_BASE}/stories/${encodeURIComponent(id)}`);
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Conto não encontrado");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Aventura não encontrada");
       return data as Story;
     },
   },
@@ -130,13 +130,13 @@ export const api = {
     async listStories(): Promise<Story[]> {
       const res = await fetch(`${API_BASE}/admin/stories`, { headers: getHeaders() });
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao listar contos");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao listar aventuras");
       return data as Story[];
     },
     async getStory(id: string): Promise<Story> {
       const res = await fetch(`${API_BASE}/admin/stories/${encodeURIComponent(id)}`, { headers: getHeaders() });
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Conto não encontrado");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Aventura não encontrada");
       return data as Story;
     },
     async createStory(body: Partial<Story>): Promise<Story> {
@@ -146,7 +146,7 @@ export const api = {
         body: JSON.stringify(body),
       });
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao criar conto");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao criar aventura");
       return data as Story;
     },
     async updateStory(id: string, body: Partial<Story>): Promise<Story> {
@@ -156,7 +156,7 @@ export const api = {
         body: JSON.stringify(body),
       });
       const data = await parseJson(res);
-      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao atualizar conto");
+      if (!res.ok) throw new Error((data as { error?: string }).error || "Erro ao atualizar aventura");
       return data as Story;
     },
     async deleteStory(id: string): Promise<void> {
@@ -166,7 +166,7 @@ export const api = {
       });
       if (!res.ok) {
         const data = (await parseJson(res)) as { error?: string };
-        throw new Error(data.error || "Erro ao excluir conto");
+        throw new Error(data.error || "Erro ao excluir aventura");
       }
     },
     async uploadFile(file: File): Promise<{ url: string }> {

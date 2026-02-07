@@ -58,7 +58,7 @@ const StoryPreview = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="font-serif text-4xl text-cream mb-4">Conto não encontrado</h1>
+          <h1 className="font-serif text-4xl text-cream mb-4">Aventura não encontrada</h1>
           <Button onClick={() => navigate("/")} className="bg-wine hover:bg-wine-light">
             Voltar ao início
           </Button>
@@ -285,7 +285,7 @@ const StoryPreview = () => {
         </div>
       </section>
 
-      {/* Compra avulsa deste conto (mesma página) */}
+      {/* Compra avulsa desta aventura (mesma página) */}
       <section id="comprar-conto" className="py-12 md:py-16 scroll-mt-24">
         <div className="container mx-auto px-4">
           <div className="max-w-xl mx-auto">
@@ -293,7 +293,7 @@ const StoryPreview = () => {
               <div className="absolute top-0 right-0 w-40 h-40 bg-wine/10 blur-3xl rounded-full" />
               <div className="relative text-center">
                 <h2 className="font-serif text-2xl md:text-3xl text-cream mb-2">
-                  Comprar <span className="text-gradient-gold">este conto</span>
+                  Comprar <span className="text-gradient-gold">esta aventura</span>
                 </h2>
                 <p className="text-muted-foreground mb-1">{story.title}</p>
                 <p className="text-3xl font-serif text-cream mb-6">

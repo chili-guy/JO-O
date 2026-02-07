@@ -55,7 +55,7 @@ const Header = () => {
               onClick={(e) => handleNavClick(e, "contos")}
               className="text-muted-foreground hover:text-cream transition-colors"
             >
-              Contos
+              Aventuras
             </a>
             <a 
               href="#precos" 
@@ -152,7 +152,7 @@ const Header = () => {
                 onClick={(e) => handleNavClick(e, "contos")}
                 className="text-muted-foreground hover:text-cream transition-colors py-2"
               >
-                Contos
+                Aventuras
               </a>
               <a 
                 href="#precos" 
