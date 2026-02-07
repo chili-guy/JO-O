@@ -2,8 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StoryCard from "./StoryCard";
 import { api, type Story } from "@/lib/api";
-
-const MAX_CONTOS = 6;  // 3 colunas x 2 linhas
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { cn } from "@/lib/utils";
 
 const StoriesSection = () => {
   const navigate = useNavigate();
@@ -12,11 +18,9 @@ const StoriesSection = () => {
 
   useEffect(() => {
     api.stories.list().then((list) => {
-      setAventuras(list.filter((s) => s.isPremium).slice(0, MAX_CONTOS));
+      setAventuras(list.filter((s) => s.isPremium));
     }).catch(() => setAventuras([])).finally(() => setLoading(false));
   }, []);
-
-  const contosVisiveis = aventuras;
 
   if (loading) {
     return (
@@ -40,44 +44,66 @@ const StoriesSection = () => {
           </p>
         </div>
 
-        {/* Grid 3 colunas: 3 itens (1 linha) ou 6 itens (2 linhas) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {contosVisiveis.map((story, index) =>
-            story ? (
-              <div
-                key={story.id}
-                className="cursor-pointer"
-                onClick={() => navigate(`/conto/${story.id}`)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    navigate(`/conto/${story.id}`);
-                  }
-                }}
-              >
-                <StoryCard
-                  title={story.title}
-                  excerpt={story.excerpt}
-                  category={story.category}
-                  readTime={story.readTime}
-                  price={story.price}
-                  isPremium={story.isPremium}
-                  imageUrl={story.imageUrl}
-                />
-              </div>
-            ) : (
-              <div
-                key={`placeholder-${index}`}
-                className="flex flex-col items-center justify-center min-h-[280px] rounded-lg border border-dashed border-border/50 bg-card/50 text-muted-foreground"
-              >
-                <span className="font-serif text-lg">Em breve</span>
-              </div>
-            )
-          )}
+        {/* Carrossel: vários cards visíveis, setas para ver mais */}
+        <div className="relative px-8 md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+              dragFree: false,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4 md:-ml-6">
+              {aventuras.length === 0 ? (
+                <CarouselItem className="pl-4 md:pl-6 basis-full">
+                  <div className="flex flex-col items-center justify-center min-h-[280px] rounded-lg border border-dashed border-border/50 bg-card/50 text-muted-foreground">
+                    <span className="font-serif text-lg">Nenhuma aventura em destaque</span>
+                  </div>
+                </CarouselItem>
+              ) : (
+                aventuras.map((story) => (
+                  <CarouselItem
+                    key={story.id}
+                    className={cn(
+                      "pl-4 md:pl-6",
+                      "basis-full sm:basis-[85%] md:basis-1/2 lg:basis-1/3",
+                    )}
+                  >
+                    <div
+                      className="cursor-pointer h-full"
+                      onClick={() => navigate(`/conto/${story.id}`)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          navigate(`/conto/${story.id}`);
+                        }
+                      }}
+                    >
+                      <StoryCard
+                        title={story.title}
+                        excerpt={story.excerpt}
+                        category={story.category}
+                        readTime={story.readTime}
+                        price={story.price}
+                        isPremium={story.isPremium}
+                        imageUrl={story.imageUrl}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))
+              )}
+            </CarouselContent>
+            {aventuras.length > 1 && (
+              <>
+                <CarouselPrevious className="-left-2 md:-left-4 border-wine/30 text-cream hover:bg-wine/20 hover:text-cream bg-background/80" />
+                <CarouselNext className="-right-2 md:-right-4 border-wine/30 text-cream hover:bg-wine/20 hover:text-cream bg-background/80" />
+              </>
+            )}
+          </Carousel>
         </div>
-
       </div>
     </section>
   );
