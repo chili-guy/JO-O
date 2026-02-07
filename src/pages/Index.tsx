@@ -8,10 +8,15 @@ import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [isVerified, setIsVerified] = useState(() => {
-    return localStorage.getItem("age-verified") === "true";
-  });
+  const [isVerified, setIsVerified] = useState(false);
   const location = useLocation();
+
+  // Sincronizar com localStorage após montar (evita flash/hidratação e tela preta)
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("age-verified") === "true") {
+      setIsVerified(true);
+    }
+  }, []);
 
   // Handle scroll to anchor when coming from another page
   useEffect(() => {
@@ -33,7 +38,7 @@ const Index = () => {
         <AgeVerificationModal onVerified={() => setIsVerified(true)} />
       )}
       
-      <div className={`min-h-screen bg-background ${!isVerified ? 'blur-lg pointer-events-none' : ''}`}>
+      <div className="min-h-screen bg-background">
         <Header />
         <main>
           <HeroSection />
