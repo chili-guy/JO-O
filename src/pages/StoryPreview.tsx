@@ -19,8 +19,8 @@ import StoryCard from "@/components/StoryCard";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 
-/** Vídeo de prévia padrão: 10s, player local (MP4 direto) */
-const DEFAULT_PREVIEW_VIDEO = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4";
+/** Vídeo de prévia padrão: 10s, arquivo local no projeto */
+const DEFAULT_PREVIEW_VIDEO = "/videos/preview-1.mp4";
 
 /** Retorna { type, embedUrl?, directUrl? }. Prioridade: MP4/direto = player local; YouTube/Vimeo = embed. */
 function parsePreviewVideoUrl(url: string | undefined): { type: "youtube" | "vimeo" | "direct" | "embed"; embedUrl?: string; directUrl?: string } | null {

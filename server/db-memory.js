@@ -184,9 +184,15 @@ export async function countStories() {
   return stories.size;
 }
 
-// Vídeo de prévia ~10s para o player local (MP4 direto, só ilustração). Uma URL por aventura para variar.
-const SEED_PREVIEW_VIDEOS_10S = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4";
-const SEED_PREVIEW_VIDEOS = Array(6).fill(SEED_PREVIEW_VIDEOS_10S);
+// Vídeos de prévia ~10s no projeto (public/videos/) — um por aventura
+const SEED_PREVIEW_VIDEOS = [
+  "/videos/preview-1.mp4",
+  "/videos/preview-2.mp4",
+  "/videos/preview-3.mp4",
+  "/videos/preview-4.mp4",
+  "/videos/preview-5.mp4",
+  "/videos/preview-6.mp4",
+];
 
 const DEFAULTS = [
   { id: "o-encontro-as-escuras", title: "O Encontro às Escuras", ...SEED_TEXTS["o-encontro-as-escuras"], category: "Romance", readTime: "12 min", price: 8.9, isPremium: false, tags: ["romance", "mistério", "hotel", "encontro"], publishedAt: "2024-01-15", views: 2847, imageUrl: SEED_IMAGES["o-encontro-as-escuras"], previewVideoUrl: SEED_PREVIEW_VIDEOS[0] },
