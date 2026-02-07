@@ -307,42 +307,35 @@ const StoryPreview = () => {
       {/* Trecho da aventura (prévia do texto) */}
       <section className="py-12 md:py-16" aria-label="Trecho da aventura">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             {/* Section Header */}
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/50 to-transparent" />
-              <span className="text-gold font-serif text-lg">Trecho da aventura</span>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/50 to-transparent" />
+            <div className="flex items-center gap-3 mb-10">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/40 to-transparent" />
+              <span className="text-gold font-serif text-lg tracking-wide">Trecho da aventura</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-wine/40 to-transparent" />
             </div>
 
-            {/* Texto do trecho: fullExcerpt (parágrafos) ou excerpt como fallback */}
-            <div className="bg-gradient-card border border-border/50 rounded-lg p-6 md:p-10 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-wine/10 blur-3xl rounded-full" />
-              <div className="absolute bottom-0 right-0 w-40 h-40 bg-gold/5 blur-3xl rounded-full" />
-              
-              <div className="relative">
-                <div className="text-6xl md:text-8xl text-wine/20 font-serif absolute -top-2 -left-2">"</div>
-                
-                <div className="font-serif text-base md:text-lg leading-relaxed text-cream/90 whitespace-pre-line pl-6 md:pl-8">
+            {/* Texto em destaque: sem caixa escura, tipografia como foco */}
+            <div className="relative">
+              <blockquote className="border-l-4 border-gold/60 pl-6 md:pl-8 py-2 md:py-3">
+                <p className="font-serif text-lg md:text-xl leading-relaxed text-cream whitespace-pre-line">
                   {story.fullExcerpt?.trim() || story.excerpt || "Leia o relato completo após desbloquear esta aventura."}
-                </div>
-                
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-              </div>
-
-              <div className="relative mt-8 pt-6 border-t border-border/30 text-center">
-                <p className="text-muted-foreground mb-4 text-sm">
-                  Acesse o conteúdo completo
                 </p>
-                <Button size="lg" className="bg-wine hover:bg-wine-light text-cream gap-2" onClick={scrollToCompraAvulsa}>
-                  <BookOpen className="w-4 h-4" />
-                  Ler relato completo
-                </Button>
-              </div>
+              </blockquote>
+            </div>
+
+            <div className="mt-10 text-center">
+              <p className="text-muted-foreground mb-4 text-sm uppercase tracking-wider">
+                Acesse o conteúdo completo
+              </p>
+              <Button size="lg" className="bg-wine hover:bg-wine-light text-cream gap-2" onClick={scrollToCompraAvulsa}>
+                <BookOpen className="w-4 h-4" />
+                Ler relato completo
+              </Button>
             </div>
 
             {/* Tags */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
               <Tag className="w-4 h-4 text-muted-foreground" />
               {(story.tags ?? []).map((tag) => (
                 <Badge 
