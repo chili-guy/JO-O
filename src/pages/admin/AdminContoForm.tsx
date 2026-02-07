@@ -36,6 +36,7 @@ export default function AdminContoForm() {
   const [tagsStr, setTagsStr] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [uploadingPreviewVideo, setUploadingPreviewVideo] = useState(false);
 
   useEffect(() => {
     if (!isEdit) {
@@ -89,6 +90,21 @@ export default function AdminContoForm() {
       setError((err as Error).message);
     } finally {
       setUploadingMedia(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleUploadPreviewVideo = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPreviewVideo(true);
+    try {
+      const { url } = await api.admin.uploadFile(file);
+      update("previewVideoUrl", url);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setUploadingPreviewVideo(false);
       e.target.value = "";
     }
   };
@@ -258,15 +274,48 @@ export default function AdminContoForm() {
             </div>
 
             <div className="space-y-2">
-              <Label>Vídeo de prévia / VSL (URL)</Label>
-              <Input
-                value={form.previewVideoUrl ?? ""}
-                onChange={(e) => update("previewVideoUrl", e.target.value)}
-                placeholder="YouTube, Vimeo ou link direto (.mp4). Ex: https://youtube.com/watch?v=..."
-                className="bg-background"
-              />
+              <Label>Vídeo de prévia / VSL</Label>
+              <div className="flex flex-wrap gap-2 items-center">
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+                    className="hidden"
+                    disabled={uploadingPreviewVideo}
+                    onChange={handleUploadPreviewVideo}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="gap-2 border-border text-cream" asChild>
+                    <span>
+                      <Film className="w-4 h-4" />
+                      {uploadingPreviewVideo ? "Enviando vídeo..." : "Enviar vídeo de prévia"}
+                    </span>
+                  </Button>
+                </label>
+                <span className="text-sm text-muted-foreground">ou cole a URL:</span>
+                <Input
+                  value={form.previewVideoUrl ?? ""}
+                  onChange={(e) => update("previewVideoUrl", e.target.value)}
+                  placeholder="YouTube, Vimeo ou link direto (.mp4)"
+                  className="bg-background flex-1 min-w-[200px]"
+                />
+              </div>
+              {form.previewVideoUrl && (
+                <div className="mt-2">
+                  <p className="text-xs text-muted-foreground mb-1">Prévia:</p>
+                  {/\.(mp4|webm|ogg|mov)(\?|$)/i.test(form.previewVideoUrl) ? (
+                    <video
+                      src={form.previewVideoUrl}
+                      controls
+                      className="h-32 w-auto max-w-full rounded border border-border object-contain bg-black"
+                      playsInline
+                    />
+                  ) : (
+                    <p className="text-xs text-muted-foreground truncate max-w-md">{form.previewVideoUrl}</p>
+                  )}
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">
-                Vídeo que aparece na seção &quot;Veja como tudo aconteceu&quot; antes de acessar o conteúdo completo. Deixe vazio para mostrar apenas o botão de compra.
+                Vídeo da seção &quot;Veja como tudo aconteceu&quot;. Upload (MP4/WebM) ou link. Deixe vazio para usar o padrão.
               </p>
             </div>
 
