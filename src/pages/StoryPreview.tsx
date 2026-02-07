@@ -19,12 +19,14 @@ import StoryCard from "@/components/StoryCard";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 
-/** Retorna { type, embedUrl?, directUrl? } para a URL do vídeo de prévia (VSL) */
+/** URL padrão quando a aventura não tem previewVideoUrl (para sempre ter um vídeo na prévia) */
+const DEFAULT_PREVIEW_VIDEO = "https://www.youtube.com/watch?v=aqz-KE-bpKQ";
+
+/** Retorna { type, embedUrl?, directUrl? } para a URL do vídeo de prévia (VSL). mute=1 no embed para autoplay funcionar. */
 function parsePreviewVideoUrl(url: string | undefined): { type: "youtube" | "vimeo" | "direct" | "embed"; embedUrl?: string; directUrl?: string } | null {
-  if (!url || !url.trim()) return null;
-  const u = url.trim();
+  const u = (url || "").trim() || DEFAULT_PREVIEW_VIDEO;
   const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-  if (ytMatch) return { type: "youtube", embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1` };
+  if (ytMatch) return { type: "youtube", embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&mute=1` };
   const vimeoMatch = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if (vimeoMatch) return { type: "vimeo", embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1` };
   if (/^https?:\/\//i.test(u) && /\.(mp4|webm|ogg)(\?|$)/i.test(u)) return { type: "direct", directUrl: u };
@@ -265,7 +267,8 @@ const StoryPreview = () => {
             <div className="aspect-video w-full bg-black">
               {previewVideo.embedUrl && (previewVideo.type === "youtube" || previewVideo.type === "vimeo" || previewVideo.type === "embed") && (
                 <iframe
-                  src={previewVideo.embedUrl}
+                  key={previewVideoOpen ? "open" : "closed"}
+                  src={previewVideoOpen ? previewVideo.embedUrl : undefined}
                   title="Vídeo de prévia"
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -274,7 +277,8 @@ const StoryPreview = () => {
               )}
               {previewVideo.type === "direct" && previewVideo.directUrl && (
                 <video
-                  src={previewVideo.directUrl}
+                  key={previewVideoOpen ? "open" : "closed"}
+                  src={previewVideoOpen ? previewVideo.directUrl : undefined}
                   controls
                   autoPlay
                   className="w-full h-full"
