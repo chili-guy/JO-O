@@ -47,14 +47,14 @@ export default function AdminLayout() {
             className="flex items-center gap-2 px-3 py-2 rounded-md text-muted-foreground hover:text-cream hover:bg-wine/10 mb-1"
           >
             <BookOpen className="w-4 h-4" />
-            Aventuras
+            Contos
           </Link>
           <Link
             to="/admin/contos/novo"
             className="flex items-center gap-2 px-3 py-2 rounded-md text-muted-foreground hover:text-cream hover:bg-wine/10"
           >
             <PlusCircle className="w-4 h-4" />
-            Nova aventura
+            Novo conto
           </Link>
         </nav>
         <div className="p-2 border-t border-border/50 space-y-1">

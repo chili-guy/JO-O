@@ -71,7 +71,7 @@ const HeroSection = () => {
           <div className="flex items-center justify-center gap-8 mt-12 text-muted-foreground animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div className="text-center">
               <p className="text-3xl font-serif text-cream">50+</p>
-              <p className="text-sm">Aventuras</p>
+              <p className="text-sm">Contos</p>
             </div>
             <div className="w-px h-12 bg-border" />
             <div className="text-center">

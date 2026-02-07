@@ -58,7 +58,7 @@ const Footer = () => {
                   onClick={(e) => handleNavClick(e, "contos")}
                   className="text-muted-foreground hover:text-cream transition-colors"
                 >
-                  Aventuras
+                  Contos
                 </a>
               </li>
               <li>

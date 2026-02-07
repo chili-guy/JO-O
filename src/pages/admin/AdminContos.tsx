@@ -28,7 +28,7 @@ export default function AdminContos() {
   }, []);
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Excluir a aventura "${title}"?`)) return;
+    if (!confirm(`Excluir o conto "${title}"?`)) return;
     try {
       await api.admin.deleteStory(id);
       setStories((prev) => prev.filter((s) => s.id !== id));
@@ -37,24 +37,24 @@ export default function AdminContos() {
     }
   };
 
-  if (loading) return <p className="text-muted-foreground">Carregando aventuras...</p>;
+  if (loading) return <p className="text-muted-foreground">Carregando contos...</p>;
   if (error) return <p className="text-destructive">{error}</p>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="font-serif text-2xl text-cream">Aventuras</h1>
+        <h1 className="font-serif text-2xl text-cream">Contos</h1>
         <Button asChild className="bg-wine hover:bg-wine-light text-cream w-full sm:w-auto">
           <Link to="/admin/contos/novo">
             <BookOpen className="w-4 h-4 mr-2" />
-            Nova aventura
+            Novo conto
           </Link>
         </Button>
       </div>
 
       {stories.length === 0 ? (
         <div className="rounded-lg border border-border px-4 py-8 text-center text-muted-foreground">
-          Nenhuma aventura. <Link to="/admin/contos/novo" className="text-gold hover:underline">Criar a primeira</Link>.
+          Nenhum conto. <Link to="/admin/contos/novo" className="text-gold hover:underline">Criar o primeiro</Link>.
         </div>
       ) : (
         <>
